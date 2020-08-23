@@ -9,11 +9,21 @@ jobs:
       # you must check out the repository
       - name: Checkout
         uses: actions/checkout@v2
-      - name: Hello world action step
-        uses: ./ # Uses an action in the root directory
-        id: hello
+      - name: Create new Application
+        uses: ./ 
         with:
+          adminApplicationId: ${{ secrets.ADMINCLIENTID }}
+          adminApplicationSecret: ${{ secrets.ADMINCLIENTSECRET }}
+          tenantId: ${{ secrets.TENANTID }}
           applicationName: 'MyApp'
-      # Use the output from the `hello` step
-      - name: Get the output time
-        run: echo "The time was ${{ steps.hello.outputs.clientId }}"
+      - name: Create new Application with Secret
+        uses: ./ 
+        with:
+          adminApplicationId: ${{ secrets.ADMINCLIENTID }}
+          adminApplicationSecret: ${{ secrets.ADMINCLIENTSECRET }}
+          tenantId: ${{ secrets.TENANTID }}
+          requireSecret: true
+          applicationName: 'MyAppWithSecret'
+
+      - name: Display client ID
+        run: echo "The new app can be identified with ${{ steps.hello.outputs.clientId }}"

@@ -8,10 +8,25 @@ inputs:
     description: 'Should a client secret be returned as well?'
     required: false
     default: false
+  adminApplicationId:
+    description: "AAD Application ID of an application that has the Application.ReadWrite.All scope"
+    required: true
+  adminApplicationSecret:
+    description: "AAD application secret"
+    required: true
+  tenantId:
+    description: "ID of the tenant in which the new application should be created"
+    required: true
+  debugMode:
+    description: "Boolean value if debug information should be printed"
+    required: false
+    default: false
 
 outputs:
-  clientId: # id of output
-    description: 'The time we greeted you'
+  clientId:
+    description: 'Id of the newly created application'
+  clientSecret:
+    description: 'If explicitely required: A secret string for created application; else an empty string'
 runs:
   using: 'node12'
   main: 'index.js'
