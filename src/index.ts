@@ -1,5 +1,5 @@
-const core = require("@actions/core");
-const nodeFetch = require("node-fetch");
+import * as core from "@actions/core";
+import * as nodeFetch from "node-fetch";
 
 async function main() {
     try {
