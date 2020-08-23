@@ -1,5 +1,5 @@
-import core from '@actions/core';
-import nodeFetch from "node-fetch";
+const core = require("@actions/core");
+const nodeFetch = require("node-fetch");
 
 try {
     // `who-to-greet` input defined in action metadata file
