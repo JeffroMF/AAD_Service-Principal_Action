@@ -56,7 +56,7 @@ function createApplication(token, name) {
                 "displayName": name
             }
         }).then(resp => {
-            resp.json.then(app => {
+            resp.json().then(app => {
                 resolve(app.appId)
             })
         })
@@ -73,7 +73,7 @@ function createSecret(token, appId) {
                 "displayName": "default"
             }
         }).then(resp => {
-            resp.json.then(secret => {
+            resp.json().then(secret => {
                 resolve(secret.secretText);
             })
         })
