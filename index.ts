@@ -1,43 +1,41 @@
 const core = require("@actions/core");
 const nodeFetch = require("node-fetch");
 
-try {
-    // `who-to-greet` input defined in action metadata file
-    const adminAppId = core.getInput("adminApplicationId");
-    const adminAppSecret = core.getInput("adminApplicationSecret");
-    const tenantId = core.getInput("tenantId");
-    const name = core.getInput('applicationName');
-    const isSecretRequired = core.getInput('requireSecret');
-    const debugMode = core.getInput('requireSecret');
+async function main() {
+    try {
+        // `who-to-greet` input defined in action metadata file
+        const adminAppId = core.getInput("adminApplicationId");
+        const adminAppSecret = core.getInput("adminApplicationSecret");
+        const tenantId = core.getInput("tenantId");
+        const name = core.getInput('applicationName');
+        const isSecretRequired = core.getInput('requireSecret');
+        const debugMode = core.getInput('requireSecret');
 
-    getToken(adminAppId, adminAppSecret, tenantId).then(token => {
-        createApplication(token, name).then(appId => {
-            core.setOutput("clientId", appId);
-            if (isSecretRequired) {
-                createSecret(token, appId).then(secret => { 
-                    core.setOutput("clientSecret", secret);
-                    if(debugMode) {
-                        console.info("Client ID: " + appId);
-                        console.info("Client Secret: " + secret);
-                    }
-                })
-                
+        const token = await getToken(adminAppId, adminAppSecret, tenantId);
+        const appId = await createApplication(token, name);
+        core.setOutput("clientId", appId);
+        if (isSecretRequired) {
+            const secret = await createSecret(token, appId);
+            core.setOutput("clientSecret", secret);
+            if (debugMode) {
+                console.info("Client ID: " + appId);
+                console.info("Client Secret: " + secret);
             }
-            else {
-                core.setOutput("clientSecret", "");
-                if(debugMode) {
-                    console.info("Client ID: " + appId);
-                    console.info("Client Secret: ");
-                }
+        }
+        else {
+            core.setOutput("clientSecret", "");
+            if (debugMode) {
+                console.info("Client ID: " + appId);
+                console.info("Client Secret: ");
             }
-            
-        })
-    })
-} catch (error) {
-    core.setFailed(error.message);
+        }
+    } catch (error) {
+        core.setFailed(error.message);
+    }
 }
 
-function getToken(appId:string, appSecret:string, tenantId:string):Promise<string> {
+
+function getToken(appId: string, appSecret: string, tenantId: string): Promise<string> {
     return new Promise(resolve => {
         const queryParams = new URLSearchParams();
         queryParams.append('client_id', appId);
@@ -54,7 +52,7 @@ function getToken(appId:string, appSecret:string, tenantId:string):Promise<strin
         })
     })
 }
-function createApplication(token:string, name:string):Promise<string> {
+function createApplication(token: string, name: string): Promise<string> {
     return new Promise(resolve => {
         nodeFetch("https://graph.microsoft.com/v1.0/applications", {
             method: "POST",
@@ -71,7 +69,7 @@ function createApplication(token:string, name:string):Promise<string> {
         })
     })
 }
-function createSecret(token:string, appId:string):Promise<string> {
+function createSecret(token: string, appId: string): Promise<string> {
     return new Promise(resolve => {
         nodeFetch("https://graph.microsoft.com/v1.0/applications/" + appId + "/addPassword", {
             method: "POST",
@@ -88,3 +86,5 @@ function createSecret(token:string, appId:string):Promise<string> {
         })
     })
 }
+
+main();
