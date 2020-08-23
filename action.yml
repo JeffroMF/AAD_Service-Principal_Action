@@ -1,0 +1,17 @@
+name: 'AAD_CreateServicePrincipal'
+description: 'Automatically create a new Service Principal'
+inputs:
+  applicationName:  # id of input
+    description: 'Application Name of the new Service Principal'
+    required: true
+  requireSecret:
+    description: 'Should a client secret be returned as well?'
+    required: false
+    default: false
+
+outputs:
+  clientId: # id of output
+    description: 'The time we greeted you'
+runs:
+  using: 'node12'
+  main: 'index.js'
