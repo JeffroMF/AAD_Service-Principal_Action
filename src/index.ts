@@ -3,6 +3,7 @@ import * as nodeFetch from "node-fetch";
 
 async function main() {
     try {
+        console.log("Workflow started...");
         // `who-to-greet` input defined in action metadata file
         const adminAppId = core.getInput("adminApplicationId");
         const adminAppSecret = core.getInput("adminApplicationSecret");
@@ -10,12 +11,16 @@ async function main() {
         const name = core.getInput('applicationName');
         const isSecretRequired = core.getInput('requireSecret');
         const debugMode = core.getInput('requireSecret');
+        console.log("Inputs fetched...");
 
         const token = await getToken(adminAppId, adminAppSecret, tenantId);
+        console.log("Token generated...");
         const appId = await createApplication(token, name);
+        console.log("App created...");
         core.setOutput("clientId", appId);
         if (isSecretRequired) {
             const secret = await createSecret(token, appId);
+            console.log("Secret created...");
             core.setOutput("clientSecret", secret);
             if (debugMode) {
                 console.info("Client ID: " + appId);
@@ -35,7 +40,7 @@ async function main() {
 }
 
 
-function getToken(appId: string, appSecret: string, tenantId: string): Promise<string> {
+async function getToken(appId: string, appSecret: string, tenantId: string): Promise<string> {
     return new Promise(resolve => {
         const queryParams = new URLSearchParams();
         queryParams.append('client_id', appId);
@@ -52,7 +57,7 @@ function getToken(appId: string, appSecret: string, tenantId: string): Promise<s
         })
     })
 }
-function createApplication(token: string, name: string): Promise<string> {
+async function createApplication(token: string, name: string): Promise<string> {
     return new Promise(resolve => {
         nodeFetch("https://graph.microsoft.com/v1.0/applications", {
             method: "POST",
@@ -69,7 +74,7 @@ function createApplication(token: string, name: string): Promise<string> {
         })
     })
 }
-function createSecret(token: string, appId: string): Promise<string> {
+async function createSecret(token: string, appId: string): Promise<string> {
     return new Promise(resolve => {
         nodeFetch("https://graph.microsoft.com/v1.0/applications/" + appId + "/addPassword", {
             method: "POST",
