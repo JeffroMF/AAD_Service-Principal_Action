@@ -11,23 +11,14 @@ async function main() {
         const name = core.getInput('applicationName');
         const isSecretRequired = core.getInput('requireSecret');
         const debugMode = core.getInput('requireSecret');
-        console.log(`Inputs fetched: {
-            ${adminAppId}
-            ${adminAppSecret}
-            ${tenantId}
-            ${name}
-            ${isSecretRequired}
-            ${debugMode}
-        }`);
 
         const token = await getToken(adminAppId, adminAppSecret, tenantId);
         console.log("Token generated: "+token);
         const app = await createApplication(token, name);
         console.log("App created: "+app.clientId);
         core.setOutput("clientId", app.clientId);
-        if (isSecretRequired) {
+        if (isSecretRequired === "true") {
             const secret = await createSecret(token, app.id);
-            console.log("Secret created: "+secret);
             core.setOutput("clientSecret", secret);
             if (debugMode === "true") {
                 console.info("Client ID: " + app.clientId);
@@ -59,7 +50,6 @@ async function getToken(appId: string, appSecret: string, tenantId: string): Pro
             body: queryParams
         })
         const json = await token.json();
-        console.log(json);
         resolve(json.access_token);
     })
 }
@@ -76,7 +66,6 @@ async function createApplication(token: string, name: string): Promise<{clientId
             })
         });
         const json = await resp.json();
-        console.log(json);
         resolve({
             clientId: json.appId,
             id: json.id
@@ -96,7 +85,6 @@ async function createSecret(token: string, appId: string): Promise<string> {
             })
         });
         const json = await resp.json();
-        console.log(json);
         resolve(json.secretText);
     })
 }
