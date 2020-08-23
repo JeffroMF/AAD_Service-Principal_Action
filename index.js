@@ -16,5 +16,6 @@ try {
     core_1.default.setOutput("clientSecret", "");
 }
 catch (error) {
+    console.error(error);
     core_1.default.setFailed(error.message);
 }
