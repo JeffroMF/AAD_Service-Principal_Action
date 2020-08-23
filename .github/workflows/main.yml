@@ -9,6 +9,9 @@ jobs:
       # you must check out the repository
       - name: Checkout
         uses: actions/checkout@v2
+      - name: Build
+        run: npm install
+        run: tsc
       - name: Create new Application
         uses: ./lib
         with:

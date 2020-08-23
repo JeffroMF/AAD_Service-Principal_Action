@@ -13,13 +13,14 @@ async function main() {
         const debugMode = core.getInput('requireSecret');
 
         const token = await getToken(adminAppId, adminAppSecret, tenantId);
-        console.log("Token generated: "+token);
+        console.info("Token generated...");
         const app = await createApplication(token, name);
-        console.log("App created: "+app.clientId);
+        console.info("App created...");
         core.setOutput("clientId", app.clientId);
         if (isSecretRequired === "true") {
             const secret = await createSecret(token, app.id);
             core.setOutput("clientSecret", secret);
+            console.info("Secret created...");
             if (debugMode === "true") {
                 console.info("Client ID: " + app.clientId);
                 console.info("Client Secret: " + secret);
