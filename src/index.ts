@@ -58,7 +58,7 @@ async function getToken(appId: string, appSecret: string, tenantId: string): Pro
             method: "POST",
             body: queryParams
         })
-        const json = token.json();
+        const json = await token.json();
         console.log(json);
         resolve(json.access_token);
     })
@@ -74,7 +74,7 @@ async function createApplication(token: string, name: string): Promise<string> {
                 "displayName": name
             }
         });
-        const json = resp.json();
+        const json = await resp.json();
         console.log(json);
         resolve(json.appId);
     })
@@ -90,7 +90,7 @@ async function createSecret(token: string, appId: string): Promise<string> {
                 "displayName": "default"
             }
         });
-        const json = resp.json();
+        const json = await resp.json();
         console.log(json);
         resolve(json.secretText);
     })
