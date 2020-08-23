@@ -52,7 +52,7 @@ async function getToken(appId: string, appSecret: string, tenantId: string): Pro
         const queryParams = new URLSearchParams();
         queryParams.append('client_id', appId);
         queryParams.append('client_secret', appSecret);
-        queryParams.append('scope', "https%3A%2F%2Fgraph.microsoft.com%2F.default");
+        queryParams.append('scope', "https://graph.microsoft.com/.default");
         queryParams.append('grant_type', "client_credentials");
         const token = await nodeFetch("https://login.microsoftonline.com/" + tenantId + "/oauth2/v2.0/token", {
             method: "POST",
