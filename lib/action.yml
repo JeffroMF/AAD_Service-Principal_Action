@@ -7,7 +7,7 @@ inputs:
   requireSecret:
     description: 'Should a client secret be returned as well?'
     required: false
-    default: false
+    default: "false"
   adminApplicationId:
     description: "AAD Application ID of an application that has the Application.ReadWrite.All scope"
     required: true
@@ -20,7 +20,7 @@ inputs:
   debugMode:
     description: "Boolean value if debug information should be printed"
     required: false
-    default: false
+    default: "false"
 
 outputs:
   clientId:

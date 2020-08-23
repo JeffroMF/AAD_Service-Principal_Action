@@ -22,22 +22,22 @@ async function main() {
 
         const token = await getToken(adminAppId, adminAppSecret, tenantId);
         console.log("Token generated: "+token);
-        const appId = await createApplication(token, name);
-        console.log("App created: "+appId);
-        core.setOutput("clientId", appId);
+        const app = await createApplication(token, name);
+        console.log("App created: "+app.clientId);
+        core.setOutput("clientId", app.clientId);
         if (isSecretRequired) {
-            const secret = await createSecret(token, appId);
+            const secret = await createSecret(token, app.id);
             console.log("Secret created: "+secret);
             core.setOutput("clientSecret", secret);
-            if (debugMode) {
-                console.info("Client ID: " + appId);
+            if (debugMode === "true") {
+                console.info("Client ID: " + app.clientId);
                 console.info("Client Secret: " + secret);
             }
         }
         else {
             core.setOutput("clientSecret", "");
-            if (debugMode) {
-                console.info("Client ID: " + appId);
+            if (debugMode === "true") {
+                console.info("Client ID: " + app.clientId);
                 console.info("Client Secret: ");
             }
         }
@@ -63,7 +63,7 @@ async function getToken(appId: string, appSecret: string, tenantId: string): Pro
         resolve(json.access_token);
     })
 }
-async function createApplication(token: string, name: string): Promise<string> {
+async function createApplication(token: string, name: string): Promise<{clientId:string,id:string}> {
     return new Promise(async (resolve,reject) => {
         const resp = await nodeFetch("https://graph.microsoft.com/v1.0/applications", {
             method: "POST",
@@ -77,7 +77,10 @@ async function createApplication(token: string, name: string): Promise<string> {
         });
         const json = await resp.json();
         console.log(json);
-        resolve(json.appId);
+        resolve({
+            clientId: json.appId,
+            id: json.id
+        });
     })
 }
 async function createSecret(token: string, appId: string): Promise<string> {
