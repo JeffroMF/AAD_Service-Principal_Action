@@ -68,11 +68,12 @@ async function createApplication(token: string, name: string): Promise<string> {
         const resp = await nodeFetch("https://graph.microsoft.com/v1.0/applications", {
             method: "POST",
             headers: {
-                "Authorization": "Bearer " + token
+                "Authorization": "Bearer " + token,
+                "Content-Type": "application/json"
             },
-            body: {
+            body: JSON.stringify({
                 "displayName": name
-            }
+            })
         });
         const json = await resp.json();
         console.log(json);
@@ -84,11 +85,12 @@ async function createSecret(token: string, appId: string): Promise<string> {
         const resp = await nodeFetch("https://graph.microsoft.com/v1.0/applications/" + appId + "/addPassword", {
             method: "POST",
             headers: {
-                "Authorization": "Bearer " + token
+                "Authorization": "Bearer " + token,
+                "Content-Type": "application/json"
             },
-            body: {
+            body: JSON.stringify({
                 "displayName": "default"
-            }
+            })
         });
         const json = await resp.json();
         console.log(json);
