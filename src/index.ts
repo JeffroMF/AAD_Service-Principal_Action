@@ -48,25 +48,24 @@ async function main() {
 
 
 async function getToken(appId: string, appSecret: string, tenantId: string): Promise<string> {
-    return new Promise((resolve,reject) => {
+    return new Promise(async (resolve,reject) => {
         const queryParams = new URLSearchParams();
         queryParams.append('client_id', appId);
         queryParams.append('client_secret', appSecret);
         queryParams.append('scope', "Application.ReadWrite.All");
         queryParams.append('grant_type', "client_credentials");
-        const token = nodeFetch("https://login.microsoftonline.com/" + tenantId + "/oauth2/v2.0/token", {
+        const token = await nodeFetch("https://login.microsoftonline.com/" + tenantId + "/oauth2/v2.0/token", {
             method: "POST",
             body: queryParams
-        }).then(res => {
-            res.json().then(json => {
-                resolve(json.access_token);
-            })
         })
+        const json = token.json();
+        console.log(json);
+        resolve(json.access_token);
     })
 }
 async function createApplication(token: string, name: string): Promise<string> {
-    return new Promise((resolve,reject) => {
-        nodeFetch("https://graph.microsoft.com/v1.0/applications", {
+    return new Promise(async (resolve,reject) => {
+        const resp = await nodeFetch("https://graph.microsoft.com/v1.0/applications", {
             method: "POST",
             headers: {
                 "Authorization": "Bearer " + token
@@ -74,16 +73,15 @@ async function createApplication(token: string, name: string): Promise<string> {
             body: {
                 "displayName": name
             }
-        }).then(resp => {
-            resp.json().then(app => {
-                resolve(app.appId)
-            })
-        })
+        });
+        const json = resp.json();
+        console.log(json);
+        resolve(json.appId);
     })
 }
 async function createSecret(token: string, appId: string): Promise<string> {
-    return new Promise((resolve,reject) => {
-        nodeFetch("https://graph.microsoft.com/v1.0/applications/" + appId + "/addPassword", {
+    return new Promise(async (resolve,reject) => {
+        const resp = await nodeFetch("https://graph.microsoft.com/v1.0/applications/" + appId + "/addPassword", {
             method: "POST",
             headers: {
                 "Authorization": "Bearer " + token
@@ -91,11 +89,10 @@ async function createSecret(token: string, appId: string): Promise<string> {
             body: {
                 "displayName": "default"
             }
-        }).then(resp => {
-            resp.json().then(secret => {
-                resolve(secret.secretText);
-            })
-        })
+        });
+        const json = resp.json();
+        console.log(json);
+        resolve(json.secretText);
     })
 }
 
