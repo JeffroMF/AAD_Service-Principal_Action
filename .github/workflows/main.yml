@@ -10,14 +10,14 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v2
       - name: Create new Application
-        uses: ./ 
+        uses: ./lib
         with:
           adminApplicationId: ${{ secrets.ADMINCLIENTID }}
           adminApplicationSecret: ${{ secrets.ADMINCLIENTSECRET }}
           tenantId: ${{ secrets.TENANTID }}
           applicationName: 'MyApp'
       - name: Create new Application with Secret
-        uses: ./ 
+        uses: ./lib
         with:
           adminApplicationId: ${{ secrets.ADMINCLIENTID }}
           adminApplicationSecret: ${{ secrets.ADMINCLIENTSECRET }}
