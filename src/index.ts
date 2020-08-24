@@ -73,10 +73,14 @@ async function createApplication(
         let body: any = { "displayname": name };
         if (redirectUrls && redirectUrls != "") {
             const urls = redirectUrls.split(",");
-            body.web.redirectUris = urls;
-            if (logoutUrl !== "") body.web.logoutUrl = logoutUrl;
+            body.web = {redirectUris: urls};
+            
             if (allowImplicitId === "true") body.web.implicitGrantSettings.enableIdTokenIssuance = true;
             if (allowImplicitAccess === "true") body.web.implicitGrantSettings.enableAccessTokenIssuance = true;
+        }
+        if (logoutUrl !== "") {
+            if(body.web) body.web.logoutUrl = logoutUrl;
+            else body.web = {logoutUrl: logoutUrl};
         }
         const resp = await nodeFetch("https://graph.microsoft.com/v1.0/applications", {
             method: "POST",
