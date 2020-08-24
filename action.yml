@@ -1,5 +1,9 @@
-name: 'AAD_CreateServicePrincipal'
-description: 'Automatically create a new Service Principal'
+name: 'Azure Active Directory Application'
+description: 'Automatically create a new AAD Application'
+author: 'Tobias Urban'
+branding:
+  icon: 'unlock'
+  color: 'blue'
 inputs:
   adminApplicationId:
     description: "AAD Application ID of an application that has the Application.ReadWrite.All scope"
