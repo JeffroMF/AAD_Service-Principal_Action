@@ -21,13 +21,13 @@ The Action returns two outputs, clientId and clientSecret. You can use these in 
 
 ## Example
     name: Create new Application with Secret
-    uses: ./lib
+    uses: urmade/AAD_Service-Principal_Action@v1.0
     with:
         adminApplicationId: ${{ secrets.ADMINCLIENTID }}
         adminApplicationSecret: ${{ secrets.ADMINCLIENTSECRET }}
         tenantId: ${{ secrets.TENANTID }}
         requireSecret: true
-        applicationName: 'MyAppWithSecret'
+        applicationName: 'My App Name'
         redirectUrl: 'http://localhost:8000/redirect,https://myapp.awesome.com/redirect'
         logoutUrl: 'https://myapp.awesome.com/logout'
         allowImplicitIdToken: "true"
