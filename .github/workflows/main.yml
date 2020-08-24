@@ -10,7 +10,7 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v2
       - name: Create new Application with Secret
-        uses: actions/azure-active-directory-application@v1.0
+        uses: actions/azure-active-directory-application
         with:
           adminApplicationId: ${{ secrets.ADMINCLIENTID }}
           adminApplicationSecret: ${{ secrets.ADMINCLIENTSECRET }}
