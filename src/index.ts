@@ -74,7 +74,10 @@ async function createApplication(
         if (redirectUrls && redirectUrls != "") {
             const urls = redirectUrls.split(",");
             body.web = {redirectUris: urls};
-            
+            body.web.implicitGrantSettings = {
+                enableIdTokenIssuance: false,
+                enableAccessTokenIssuance: false
+            }
             if (allowImplicitId === "true") body.web.implicitGrantSettings.enableIdTokenIssuance = true;
             if (allowImplicitAccess === "true") body.web.implicitGrantSettings.enableAccessTokenIssuance = true;
         }
