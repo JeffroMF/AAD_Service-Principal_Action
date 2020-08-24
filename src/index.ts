@@ -20,8 +20,8 @@ async function main() {
         const debugMode = core.getInput('requireSecret');
 
 
-        console.log(isSecretRequired);
-        console.log(enableImplicitIdToken);
+        console.log(typeof isSecretRequired);
+        console.log(typeof enableImplicitIdToken);
 
         const token = await getToken(adminAppId, adminAppSecret, tenantId);
         console.info("Token generated...");
