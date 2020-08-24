@@ -9,15 +9,8 @@ jobs:
       # you must check out the repository
       - name: Checkout
         uses: actions/checkout@v2
-      - name: Build
+      - name: Build 
         run: npm install && tsc
-      - name: Create new Application
-        uses: ./lib
-        with:
-          adminApplicationId: ${{ secrets.ADMINCLIENTID }}
-          adminApplicationSecret: ${{ secrets.ADMINCLIENTSECRET }}
-          tenantId: ${{ secrets.TENANTID }}
-          applicationName: 'MyApp'
       - name: Create new Application with Secret
         uses: ./lib
         with:
@@ -26,6 +19,8 @@ jobs:
           tenantId: ${{ secrets.TENANTID }}
           requireSecret: true
           applicationName: 'MyAppWithSecret'
-
+          redirectUrl: 'http://localhost:8000/redirect,https://myapp.awesome.com/redirect'
+          logoutUrl: 'https://myapp.awesome.com/logout'
+          allowImplicitIdToken: "true"
       - name: Display client ID
-        run: echo "The new app can be identified with ${{ steps.hello.outputs.clientId }}"
+        run: echo "The new app can be identified with ${{ steps.SimpleApp.outputs.clientId }}"

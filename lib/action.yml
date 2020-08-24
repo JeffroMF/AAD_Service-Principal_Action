@@ -1,13 +1,6 @@
 name: 'AAD_CreateServicePrincipal'
 description: 'Automatically create a new Service Principal'
 inputs:
-  applicationName:  # id of input
-    description: 'Application Name of the new Service Principal'
-    required: true
-  requireSecret:
-    description: 'Should a client secret be returned as well?'
-    required: false
-    default: "false"
   adminApplicationId:
     description: "AAD Application ID of an application that has the Application.ReadWrite.All scope"
     required: true
@@ -17,6 +10,30 @@ inputs:
   tenantId:
     description: "ID of the tenant in which the new application should be created"
     required: true
+
+  applicationName:  # id of input
+    description: 'Application Name of the new Service Principal'
+    required: false
+    default: "Automated application"
+  redirectUrl:
+    description: 'Redirect URL(s) for the application, in a comma-seperated format (URL,URL,URL,...)'
+    required: false
+  logoutUrl:
+    description: 'Logout URL for the application'
+    required: false
+  allowImplicitIdToken:
+    description: 'true if implicit ID token acquiry should be allowed'
+    required: false
+    default: "false"
+  allowImplicitAccessToken:
+    description: 'true if implicit access token acquiry should be allowed'
+    required: false
+    default: "false"
+
+  requireSecret:
+    description: 'Should a client secret be returned as well?'
+    required: false
+    default: "false"
   debugMode:
     description: "Boolean value if debug information should be printed"
     required: false

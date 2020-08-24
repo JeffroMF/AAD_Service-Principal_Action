@@ -8,13 +8,24 @@ async function main() {
         const adminAppId = core.getInput("adminApplicationId");
         const adminAppSecret = core.getInput("adminApplicationSecret");
         const tenantId = core.getInput("tenantId");
+
+
         const name = core.getInput('applicationName');
+        const redirectUrls = core.getInput('redirectUrl');
+        const logoutUrl = core.getInput('logoutUrl');
+
+        const enableImplicitIdToken = core.getInput("allowImplicitIdToken");
+        const enableImplicitAccessToken = core.getInput("allowImplicitAccessToken");
         const isSecretRequired = core.getInput('requireSecret');
         const debugMode = core.getInput('requireSecret');
 
+
+        console.log(isSecretRequired);
+        console.log(enableImplicitIdToken);
+
         const token = await getToken(adminAppId, adminAppSecret, tenantId);
         console.info("Token generated...");
-        const app = await createApplication(token, name);
+        const app = await createApplication(token, name, redirectUrls, logoutUrl, enableImplicitIdToken, enableImplicitAccessToken);
         console.info("App created...");
         core.setOutput("clientId", app.clientId);
         if (isSecretRequired === "true") {
@@ -40,7 +51,7 @@ async function main() {
 
 
 async function getToken(appId: string, appSecret: string, tenantId: string): Promise<string> {
-    return new Promise(async (resolve,reject) => {
+    return new Promise(async (resolve, reject) => {
         const queryParams = new URLSearchParams();
         queryParams.append('client_id', appId);
         queryParams.append('client_secret', appSecret);
@@ -54,17 +65,26 @@ async function getToken(appId: string, appSecret: string, tenantId: string): Pro
         resolve(json.access_token);
     })
 }
-async function createApplication(token: string, name: string): Promise<{clientId:string,id:string}> {
-    return new Promise(async (resolve,reject) => {
+async function createApplication(
+    token: string, name: string,
+    redirectUrls?: string, logoutUrl?: string, allowImplicitId?: string, allowImplicitAccess?: string
+): Promise<{ clientId: string, id: string }> {
+    return new Promise(async (resolve, reject) => {
+        let body: any = { "displayname": name };
+        if (redirectUrls && redirectUrls != "") {
+            const urls = redirectUrls.split(",");
+            body.web.redirectUris = urls;
+            if (logoutUrl !== "") body.web.logoutUrl = logoutUrl;
+            if (allowImplicitId === "true") body.web.implicitGrantSettings.enableIdTokenIssuance = true;
+            if (allowImplicitAccess === "true") body.web.implicitGrantSettings.enableAccessTokenIssuance = true;
+        }
         const resp = await nodeFetch("https://graph.microsoft.com/v1.0/applications", {
             method: "POST",
             headers: {
                 "Authorization": "Bearer " + token,
                 "Content-Type": "application/json"
             },
-            body: JSON.stringify({
-                "displayName": name
-            })
+            body: JSON.stringify(body)
         });
         const json = await resp.json();
         resolve({
@@ -74,7 +94,7 @@ async function createApplication(token: string, name: string): Promise<{clientId
     })
 }
 async function createSecret(token: string, appId: string): Promise<string> {
-    return new Promise(async (resolve,reject) => {
+    return new Promise(async (resolve, reject) => {
         const resp = await nodeFetch("https://graph.microsoft.com/v1.0/applications/" + appId + "/addPassword", {
             method: "POST",
             headers: {
